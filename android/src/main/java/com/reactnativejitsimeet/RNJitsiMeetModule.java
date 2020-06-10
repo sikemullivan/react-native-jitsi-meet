@@ -65,6 +65,40 @@ public class RNJitsiMeetModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void callToken(String url, ReadableMap userInfo, String token) {
+        UiThreadUtil.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (mJitsiMeetViewReference.getJitsiMeetView() != null) {
+                    RNJitsiMeetUserInfo _userInfo = new RNJitsiMeetUserInfo();
+                    if (userInfo != null) {
+                        if (userInfo.hasKey("displayName")) {
+                            _userInfo.setDisplayName(userInfo.getString("displayName"));
+                          }
+                          if (userInfo.hasKey("email")) {
+                            _userInfo.setEmail(userInfo.getString("email"));
+                          }
+                          if (userInfo.hasKey("avatar")) {
+                            String avatarURL = userInfo.getString("avatar");
+                            try {
+                                _userInfo.setAvatar(new URL(avatarURL));
+                            } catch (MalformedURLException e) {
+                            }
+                          }
+                    }
+                    RNJitsiMeetConferenceOptions options = new RNJitsiMeetConferenceOptions.Builder()
+                            .setRoom(url)
+                            .setAudioOnly(false)
+                            .setUserInfo(_userInfo)
+                            .setToken(token)
+                            .build();
+                    mJitsiMeetViewReference.getJitsiMeetView().join(options);
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void audioCall(String url, ReadableMap userInfo) {
         UiThreadUtil.runOnUiThread(new Runnable() {
             @Override

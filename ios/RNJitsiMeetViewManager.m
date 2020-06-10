@@ -49,6 +49,32 @@ RCT_EXPORT_METHOD(call:(NSString *)urlString userInfo:(NSDictionary *)userInfo)
     });
 }
 
+RCT_EXPORT_METHOD(callToken:(NSString *)urlString userInfo:(NSDictionary *)userInfo  token:(NSString *)token)
+{
+    RCTLogInfo(@"Load URL %@", urlString);
+    JitsiMeetUserInfo * _userInfo = [[JitsiMeetUserInfo alloc] init];
+    if (userInfo != NULL) {
+      if (userInfo[@"displayName"] != NULL) {
+        _userInfo.displayName = userInfo[@"displayName"];
+      }
+      if (userInfo[@"email"] != NULL) {
+        _userInfo.email = userInfo[@"email"];
+      }
+      if (userInfo[@"avatar"] != NULL) {
+        NSURL *url = [NSURL URLWithString:[userInfo[@"avatar"] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
+        _userInfo.avatar = url;
+      }
+    }
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        JitsiMeetConferenceOptions *options = [JitsiMeetConferenceOptions fromBuilder:^(JitsiMeetConferenceOptionsBuilder *builder) {        
+            builder.room = urlString;
+            builder.userInfo = _userInfo;
+            builder.token = token;
+        }];
+        [jitsiMeetView join:options];
+    });
+}
+
 RCT_EXPORT_METHOD(audioCall:(NSString *)urlString userInfo:(NSDictionary *)userInfo)
 {
     RCTLogInfo(@"Load Audio only URL %@", urlString);
