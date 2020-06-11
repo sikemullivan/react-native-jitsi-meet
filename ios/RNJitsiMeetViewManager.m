@@ -49,7 +49,7 @@ RCT_EXPORT_METHOD(call:(NSString *)urlString userInfo:(NSDictionary *)userInfo)
     });
 }
 
-RCT_EXPORT_METHOD(callToken:(NSString *)urlString userInfo:(NSDictionary *)userInfo  token:(NSString *)token)
+RCT_EXPORT_METHOD(callToken:(NSString *)urlString userInfo:(NSDictionary *)userInfo token:(NSString *)token)
 {
     RCTLogInfo(@"Load URL %@", urlString);
     JitsiMeetUserInfo * _userInfo = [[JitsiMeetUserInfo alloc] init];
